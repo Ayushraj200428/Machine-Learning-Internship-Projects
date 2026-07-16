@@ -1,0 +1,13 @@
+# Ignore large image datasets
+SVM of dogs and cats/train/
+SVM of dogs and cats/test1/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+
+# Virtual environments
+venv/
+.env/
