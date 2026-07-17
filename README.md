@@ -6,6 +6,7 @@
 ![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-ML-orange?style=for-the-badge&logo=scikit-learn)
 ![Pandas](https://img.shields.io/badge/Pandas-Data%20Analysis-purple?style=for-the-badge&logo=pandas)
 ![NumPy](https://img.shields.io/badge/NumPy-Numerical%20Computing-blue?style=for-the-badge&logo=numpy)
+![OpenCV](https://img.shields.io/badge/OpenCV-Computer%20Vision-green?style=for-the-badge&logo=opencv)
 ![Matplotlib](https://img.shields.io/badge/Matplotlib-Visualization-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-success?style=for-the-badge)
 
@@ -35,6 +36,7 @@ Machine-Learning-Internship-Projects/
 ├── Project 1/
 ├── Project 2/
 ├── Project 3/
+├── Project 4/
 ├── Datasets/
 ├── Models/
 ├── Images/
@@ -50,6 +52,7 @@ Machine-Learning-Internship-Projects/
 - Pandas
 - Matplotlib
 - Seaborn
+- OpenCV
 - Scikit-Learn
 - Jupyter Notebook
 - Joblib / Pickle
