@@ -1,26 +1,8 @@
-"""
-Hand Gesture Recognition using CNN
-====================================
-Dataset : LeapGestRecog
-  - 10 subjects (folders 00-09)
-  - 10 gesture classes per subject
-  - 200 PNG images per class  →  20,000 total images
-
-Gestures : palm, l, fist, fist_moved, thumb, index, ok, palm_moved, c, down
-
-Pipeline (fast, memory-efficient):
-  1. Collect all file paths + labels into a list
-  2. Build a tf.data pipeline (reads images on-the-fly, no RAM blow-up)
-  3. Train a small CNN
-  4. Evaluate and plot results
-  5. Predict on a single image
-"""
-
 # ── Imports ──────────────────────────────────────────────────────────────────
 import os, glob, random, time
 import numpy as np
 import matplotlib
-matplotlib.use("Agg")          # no GUI needed; saves plots to files
+matplotlib.use("Agg")         
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -80,7 +62,6 @@ print(f"  Found {len(all_paths)} images across {NUM_CLASSES} classes")
 paths  = np.array(all_paths)
 labels = np.array(all_labels)
 
-# 70 % train, 15 % val, 15 % test
 paths_train, paths_tmp, labels_train, labels_tmp = train_test_split(
     paths, labels, test_size=0.30, random_state=SEED, stratify=labels
 )
@@ -96,7 +77,7 @@ print(f"  Train: {len(paths_train)}  |  Val: {len(paths_val)}  |  Test: {len(pat
 def load_and_preprocess(path, label):
     """Read one PNG, decode as grayscale, resize, normalize → [0,1]."""
     raw   = tf.io.read_file(path)
-    image = tf.image.decode_png(raw, channels=1)          # grayscale
+    image = tf.image.decode_png(raw, channels=1)         
     image = tf.image.resize(image, [IMG_H, IMG_W])
     image = tf.cast(image, tf.float32) / 255.0
     label = tf.one_hot(label, NUM_CLASSES)
@@ -119,7 +100,6 @@ test_ds  = make_dataset(paths_test,  labels_test)
 # ─────────────────────────────────────────────────────────────────────────────
 print("\nSaving sample images …")
 
-# Grab one batch to show samples
 sample_images, sample_labels = next(iter(
     tf.data.Dataset.from_tensor_slices((paths_train, labels_train))
     .shuffle(5000, seed=SEED)
@@ -157,26 +137,25 @@ Architecture:
 
 def build_cnn():
     model = models.Sequential([
-        # Block 1
+        
         layers.Conv2D(32, (3,3), activation="relu", padding="same",
                       input_shape=(IMG_H, IMG_W, 1)),
         layers.BatchNormalization(),
         layers.MaxPooling2D((2,2)),
         layers.Dropout(0.25),
 
-        # Block 2
+  
         layers.Conv2D(64, (3,3), activation="relu", padding="same"),
         layers.BatchNormalization(),
         layers.MaxPooling2D((2,2)),
         layers.Dropout(0.25),
 
-        # Block 3
+      
         layers.Conv2D(128, (3,3), activation="relu", padding="same"),
         layers.BatchNormalization(),
         layers.MaxPooling2D((2,2)),
         layers.Dropout(0.25),
 
-        # Head
         layers.Flatten(),
         layers.Dense(256, activation="relu"),
         layers.Dropout(0.50),
@@ -240,7 +219,6 @@ test_loss, test_acc = model.evaluate(test_ds, verbose=0)
 print(f"\nTest Accuracy : {test_acc*100:.2f}%")
 print(f"Test Loss     : {test_loss:.4f}")
 
-# Collect all predictions
 y_true_list, y_pred_list = [], []
 for imgs, lbls in test_ds:
     preds = model.predict(imgs, verbose=0)
@@ -283,13 +261,12 @@ def predict_gesture(image_path):
     image = tf.image.decode_png(raw, channels=1)
     image = tf.image.resize(image, [IMG_H, IMG_W])
     image = tf.cast(image, tf.float32) / 255.0
-    image = tf.expand_dims(image, 0)           # add batch dim
+    image = tf.expand_dims(image, 0)           
 
     probs      = model.predict(image, verbose=0)[0]
     pred_idx   = int(np.argmax(probs))
     confidence = probs[pred_idx] * 100
 
-    # Plot
     img_np = image.numpy()[0].squeeze()
     plt.figure(figsize=(4, 4))
     plt.imshow(img_np, cmap="gray")
