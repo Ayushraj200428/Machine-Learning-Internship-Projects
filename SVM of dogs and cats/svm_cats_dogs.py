@@ -48,7 +48,7 @@ RANDOM_STATE = 42
 # ─────────────────────────────────────────────
 
 def load_image(path: Path) -> np.ndarray | None:
-    """Load an image, convert to RGB, resize, return numpy array."""
+   
     try:
         img = Image.open(path).convert("RGB").resize(IMG_SIZE)
         return np.array(img, dtype=np.uint8)
@@ -57,7 +57,6 @@ def load_image(path: Path) -> np.ndarray | None:
 
 
 def extract_hog(img: np.ndarray) -> np.ndarray:
-    """Convert RGB image to HOG feature vector."""
     gray = rgb2gray(img)         
     features = hog(
         gray,
