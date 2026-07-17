@@ -35,7 +35,7 @@ r2   = r2_score(y_train, y_pred_train)
 print("=" * 50)
 print("   House Price Prediction — Linear Regression")
 print("=" * 50)
-print(f"  Model trained on {len(train)} houses")
+print(f"  Model trained on {len(train)} houses");[]
 print(f"  R²   : {r2:.4f}")
 print(f"  MAE  : ${mae:,.0f}")
 print(f"  RMSE : ${rmse:,.0f}")

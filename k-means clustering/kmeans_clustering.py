@@ -1,9 +1,3 @@
-"""
-K-Means Clustering – Mall Customer Segmentation
-All inputs (file path, feature columns, number of clusters) are collected
-from the user at runtime — no values are hardcoded.
-"""
-
 import os
 import pandas as pd
 import numpy as np

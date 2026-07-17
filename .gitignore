@@ -2,6 +2,16 @@
 SVM of dogs and cats/train/
 SVM of dogs and cats/test1/
 
+# ── Computer Vision ──────────────────────────────────────────────────────────
+# Dataset (20,000 images — too large for GitHub)
+Computer_Vision/leapGestRecog/
+
+# Trained model binary (large file)
+Computer_Vision/gesture_model.keras
+
+# Auto-generated output files
+Computer_Vision/*.png
+
 # Python cache
 __pycache__/
 *.pyc
