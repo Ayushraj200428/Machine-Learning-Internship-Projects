@@ -23,6 +23,7 @@ This repository contains the Machine Learning projects completed during my inter
 - 🎯 Model Evaluation
 - 📉 Performance Comparison
 - 💾 Model Saving & Deployment Basics
+- 🎮 Gesture-Based Gaming
 
 The objective of this repository is to showcase my practical Machine Learning skills and implementation of real-world ML concepts.
 
@@ -182,6 +183,7 @@ Through these internship projects, I gained hands-on experience in:
 - Machine Learning algorithms
 - Data visualization
 - Model evaluation
+- Image Processing
 - Real-world problem solving
 - End-to-end ML project development
 
