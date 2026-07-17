@@ -15,7 +15,6 @@ train = pd.read_csv("train.csv")
 X_train = train[FEATURES].copy()
 y_train = train[TARGET].copy()
 
-# Fill missing values with median (safety net)
 for col in FEATURES:
     X_train[col] = X_train[col].fillna(X_train[col].median())
 
@@ -65,8 +64,6 @@ print("Type 'quit' or 'q' at any prompt to exit.\n")
 
 while True:
     print("-" * 50)
-
-    # Check for quit on the first prompt
     raw = input("Square footage (living area, e.g. 1500): ").strip().lower()
     if raw in ("q", "quit"):
         print("Goodbye!")
@@ -84,11 +81,10 @@ while True:
     full_bath = get_input("Number of full bathrooms     : ", min_val=0, max_val=10)
     half_bath = get_input("Number of half bathrooms     : ", min_val=0, max_val=10)
 
-    # Build input and predict
     house = pd.DataFrame([[sqft, bedrooms, full_bath, half_bath]], columns=FEATURES)
     house_scaled = scaler.transform(house)
     predicted_price = model.predict(house_scaled)[0]
-    predicted_price = max(predicted_price, 0)  # prices can't be negative
+    predicted_price = max(predicted_price, 0)  
 
     print(f"\n  ✔  Predicted Sale Price : ${predicted_price:,.0f}")
 

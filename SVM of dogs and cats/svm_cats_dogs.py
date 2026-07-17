@@ -1,16 +1,3 @@
-"""
-SVM Classifier for Cats vs Dogs (Kaggle Dataset)
-=================================================
-Pipeline:
-  1. Load images from train/train/ (labels from filename: cat.* or dog.*)
-  2. Resize to 64x64 and extract HOG features
-  3. Reduce dimensionality with PCA
-  4. Train a RBF-kernel SVM using GridSearchCV
-  5. Evaluate on a held-out validation split
-  6. Predict on test1/ and save submission CSV
-  7. Save result plots
-"""
-
 from __future__ import annotations
 
 import os
@@ -20,7 +7,7 @@ import warnings
 import numpy as np
 import pandas as pd
 import matplotlib
-matplotlib.use("Agg")           # headless backend – no display needed
+matplotlib.use("Agg")          
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from pathlib import Path
@@ -47,13 +34,13 @@ warnings.filterwarnings("ignore")
 BASE_DIR   = Path(__file__).parent
 TRAIN_DIR  = BASE_DIR / "train" / "train"
 TEST_DIR   = BASE_DIR / "test1"
-OUT_DIR    = BASE_DIR          # outputs land next to this script
+OUT_DIR    = BASE_DIR         
 
-IMG_SIZE   = (64, 64)          # resize target
-MAX_TRAIN  = 4000              # samples per class (keep training tractable)
-MAX_TEST   = 2000              # test images to predict for submission
-PCA_COMPONENTS = 150           # PCA dims after HOG
-VAL_SIZE   = 0.20              # validation split fraction
+IMG_SIZE   = (64, 64)          
+MAX_TRAIN  = 4000              
+MAX_TEST   = 2000              
+PCA_COMPONENTS = 150          
+VAL_SIZE   = 0.20             
 RANDOM_STATE = 42
 
 # ─────────────────────────────────────────────
@@ -71,7 +58,7 @@ def load_image(path: Path) -> np.ndarray | None:
 
 def extract_hog(img: np.ndarray) -> np.ndarray:
     """Convert RGB image to HOG feature vector."""
-    gray = rgb2gray(img)          # (H, W) float
+    gray = rgb2gray(img)         
     features = hog(
         gray,
         orientations=9,
@@ -83,11 +70,7 @@ def extract_hog(img: np.ndarray) -> np.ndarray:
 
 
 def load_train_data(train_dir: Path, max_per_class: int):
-    """
-    Load labelled images from train_dir.
-    Files are named  cat.<id>.jpg  and  dog.<id>.jpg.
-    Returns X (feature matrix) and y (0=cat, 1=dog).
-    """
+  
     print("Loading training images …")
     cat_files = sorted(train_dir.glob("cat.*.jpg"))[:max_per_class]
     dog_files = sorted(train_dir.glob("dog.*.jpg"))[:max_per_class]
@@ -106,7 +89,6 @@ def load_train_data(train_dir: Path, max_per_class: int):
 
 
 def load_test_data(test_dir: Path, max_images: int):
-    """Load unlabelled test images; return features and image ids."""
     print("Loading test images …")
     files = sorted(test_dir.glob("*.jpg"),
                    key=lambda p: int(p.stem))[:max_images]
@@ -203,8 +185,7 @@ def main():
 # ─────────────────────────────────────────────
 
 def save_results_plot(gs, y_val, y_pred, y_prob, val_acc, val_auc, out_dir: Path):
-    """Create and save a comprehensive results figure."""
-
+   
     fig = plt.figure(figsize=(18, 13))
     fig.suptitle("SVM Cats vs Dogs – Results Dashboard", fontsize=16, fontweight="bold", y=0.98)
     gs_layout = gridspec.GridSpec(2, 3, figure=fig, hspace=0.45, wspace=0.35)
@@ -231,7 +212,7 @@ def save_results_plot(gs, y_val, y_pred, y_prob, val_acc, val_auc, out_dir: Path
     # ── (c) GridSearch heatmap (C × gamma) ────
     ax3 = fig.add_subplot(gs_layout[0, 2])
     results = pd.DataFrame(gs.cv_results_)
-    # pick only rows where gamma is numeric-compatible for pivot
+
     pivot_rows = results[["param_svm__C", "param_svm__gamma", "mean_test_score"]].copy()
     pivot_rows["param_svm__C"]     = pivot_rows["param_svm__C"].astype(str)
     pivot_rows["param_svm__gamma"] = pivot_rows["param_svm__gamma"].astype(str)
