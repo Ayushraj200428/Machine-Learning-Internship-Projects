@@ -1,19 +1,3 @@
-"""
-Hand Gesture Prediction using OpenCV
-======================================
-Two input modes:
-  1. IMAGE  — provide a path to any image file
-  2. WEBCAM — live camera feed, predict in real-time
-
-Controls (webcam mode):
-  Q  →  quit
-  S  →  save current frame as a screenshot
-
-Usage:
-  python gesture_predict.py
-  then follow the on-screen menu.
-"""
-
 import os
 import sys
 import cv2
@@ -31,7 +15,6 @@ CLASS_NAMES = [
     "C", "Down"
 ]
 
-# Colour for the overlay text  (BGR)
 COLOR_GREEN  = (0, 220, 0)
 COLOR_WHITE  = (255, 255, 255)
 COLOR_BLACK  = (0,   0,   0)
@@ -52,14 +35,10 @@ def load_model():
 
 # ── Preprocess one OpenCV frame / image for the model ─────────────────────────
 def preprocess(frame):
-    """
-    frame  : BGR image (numpy array) from cv2.imread or cap.read()
-    returns: float32 array of shape (1, 64, 64, 1)  ready for model.predict()
-    """
-    gray    = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)   # convert to grayscale
-    resized = cv2.resize(gray, (IMG_W, IMG_H))           # resize to 64×64
-    norm    = resized.astype("float32") / 255.0          # normalize to [0, 1]
-    return norm[np.newaxis, ..., np.newaxis]             # shape: (1, 64, 64, 1)
+    gray    = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)   
+    resized = cv2.resize(gray, (IMG_W, IMG_H))          
+    norm    = resized.astype("float32") / 255.0         
+    return norm[np.newaxis, ..., np.newaxis]           
 
 
 # ── Run prediction and return label + confidence ──────────────────────────────
@@ -93,7 +72,6 @@ def draw_overlay(frame, label, confidence, probs):
     bar_h      = 13
     gap        = 2
 
-    # semi-transparent dark background for the bar chart
     overlay = frame.copy()
     cv2.rectangle(overlay, (0, bar_y0 - 20), (w, h), (20, 20, 20), -1)
     cv2.addWeighted(overlay, 0.6, frame, 0.4, 0, frame)
@@ -102,14 +80,13 @@ def draw_overlay(frame, label, confidence, probs):
         y = bar_y0 + i * (bar_h + gap)
         filled_w = int(prob * bar_max_w)
 
-        # background bar
         cv2.rectangle(frame, (bar_x0, y),
                       (bar_x0 + bar_max_w, y + bar_h), (60, 60, 60), -1)
-        # filled bar
+      
         color = COLOR_GREEN if name == label else (100, 180, 100)
         cv2.rectangle(frame, (bar_x0, y),
                       (bar_x0 + filled_w, y + bar_h), color, -1)
-        # label text
+       
         cv2.putText(frame,
                     f"{name:<14} {prob*100:4.1f}%",
                     (bar_x0 + bar_max_w + 5, y + bar_h - 2),
@@ -138,7 +115,6 @@ def predict_image(model, image_path):
 
     label, confidence, probs = predict(model, frame)
 
-    # Print results to terminal
     print(f"\n{'─'*45}")
     print(f"  Image     : {os.path.basename(image_path)}")
     print(f"  Gesture   : {label}")
@@ -150,11 +126,10 @@ def predict_image(model, image_path):
         print(f"    {name:<14} {p*100:5.1f}%  {bar}")
     print()
 
-    # Display annotated image in a window
-    # Resize for display if it's very small or large
+  
     disp = frame.copy()
     disp_h, disp_w = disp.shape[:2]
-    # Make sure there's enough space for the overlay bars
+  
     min_h = 350
     if disp_h < min_h:
         scale  = min_h / disp_h
@@ -166,7 +141,6 @@ def predict_image(model, image_path):
 
     cv2.imshow("Gesture Prediction — press any key to close", annotated)
 
-    # Save annotated result
     out_path = os.path.join(BASE_DIR, "predicted_output.png")
     cv2.imwrite(out_path, annotated)
     print(f"  Annotated image saved → {out_path}\n")
@@ -177,7 +151,7 @@ def predict_image(model, image_path):
 
 # ── MODE 2: Live webcam prediction ────────────────────────────────────────────
 def predict_webcam(model):
-    cap = cv2.VideoCapture(0)   # 0 = default webcam
+    cap = cv2.VideoCapture(0)  
 
     if not cap.isOpened():
         print("[ERROR] Cannot open webcam. Make sure it is connected.")
@@ -194,33 +168,29 @@ def predict_webcam(model):
             print("[ERROR] Failed to grab frame.")
             break
 
-        # Flip horizontally so it feels like a mirror
         frame = cv2.flip(frame, 1)
 
-        # Draw a Region-of-Interest (ROI) box — the hand should be here
         h, w   = frame.shape[:2]
         roi_x1 = w // 2 - 120
         roi_y1 = h // 2 - 120
         roi_x2 = w // 2 + 120
         roi_y2 = h // 2 + 120
 
-        roi = frame[roi_y1:roi_y2, roi_x1:roi_x2]  # crop the hand region
+        roi = frame[roi_y1:roi_y2, roi_x1:roi_x2]  
 
         label, confidence, probs = predict(model, roi)
 
-        # Draw the ROI box on the full frame
         cv2.rectangle(frame, (roi_x1, roi_y1), (roi_x2, roi_y2), COLOR_GREEN, 2)
         cv2.putText(frame, "Place hand here",
                     (roi_x1, roi_y1 - 8),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.55, COLOR_GREEN, 1)
 
-        # Annotate with overlay
         frame = draw_overlay(frame, label, confidence, probs)
 
         cv2.imshow("Live Gesture Recognition  |  Q: quit  S: save", frame)
 
         key = cv2.waitKey(1) & 0xFF
-        if key == ord('q') or key == 27:   # Q or ESC
+        if key == ord('q') or key == 27: 
             break
         elif key == ord('s'):
             screenshot_count += 1
