@@ -99,7 +99,7 @@ print("  [1] Let the program find the optimal k automatically")
 print("  [2] I will specify k manually")
 mode = ask_int("Enter 1 or 2: ", min_val=1, max_val=2)
 
-max_k = min(10, df.shape[0] - 1)   # cap at 10 or n_samples-1
+max_k = min(10, df.shape[0] - 1)  
 
 if mode == 1:
     # ── Auto: Elbow + Silhouette ──────────────
@@ -171,7 +171,6 @@ cluster_summary = (
 )
 cluster_summary["Count"] = df.groupby("Cluster").size()
 
-# Auto-label based on first two feature medians (Income & Spending or whatever user picked)
 f1, f2 = selected_features[0], selected_features[1]
 med_f1 = df[f1].median()
 med_f2 = df[f2].median()
@@ -214,7 +213,6 @@ for c in range(OPTIMAL_K):
         s=80, edgecolors="white", linewidth=0.5, alpha=0.85,
     )
 
-# Centroids back in original scale
 centroids_orig = scaler.inverse_transform(kmeans.cluster_centers_)
 ax.scatter(
     centroids_orig[:, 0], centroids_orig[:, 1],
